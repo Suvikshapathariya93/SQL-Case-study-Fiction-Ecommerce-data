@@ -1,4 +1,4 @@
-# SQL-Case-study-Fiction-Ecommerce-data
+# SQL Case study on Fiction Ecommerce data
 
 ## Contents 📖
 - [Introduction](#introduction)
@@ -88,5 +88,65 @@ ORDER BY TotalCost DESC;
 - **Grouping**: The results are grouped by `WarehouseID` and `WarehouseName`.
 - **Ordering**: The data is sorted in descending order of `TotalCost`.
 
-**2. **
+**2. Average Delivery Time per Warehouse**
+- Objective: Calculate the average delivery time (in days) for each warehouse using a window function.
+```sql
+SELECT W.WarehouseID, W.WarehouseName,
+    AVG(DATEDIFF(S.DeliveryDate, S.ShipmentDate)) AS AvgDeliveryTime
+FROM Warehouses W
+JOIN Shipments S ON W.WarehouseID = S.WarehouseID
+GROUP BY 1,2
+ORDER BY AvgDeliveryTime ASC;
+```
+- **Tables**: `Warehouses` and `Shipments` are joined using `WarehouseID`.
+- **Calculation through window function**:
+  - `DATEDIFF(S.DeliveryDate, S.ShipmentDate)` computes the number of days between shipment and delivery.
+  - `AVG()` calculates the average delivery time for each warehouse.
+- **Grouping**: Results are grouped by `WarehouseID` and `WarehouseName`.
+- **Ordering**: The data is sorted in ascending order of `AvgDeliveryTime` (quickest delivery times first).
+
+**3. Best-Selling Products**
+- Objective: Identify the top 5 best-selling products based on quantity.
+```sql
+SELECT P.ProductID, P.ProductName, SUM(SD.Quantity) AS TotalQuantity
+FROM Products P
+JOIN ShipmentDetails SD ON P.ProductID = SD.ProductID
+GROUP BY 1,2
+ORDER BY TotalQuantity DESC
+LIMIT 5;
+```
+- **Tables**: `Products` and `ShipmentDetails` are joined using `ProductID`.
+- **Aggregation**: 
+  - `SUM(SD.Quantity)` calculates the total quantity of each product shipped.
+- **Grouping**: Results are grouped by `ProductID` and `ProductName`.
+- **Ordering**: The data is sorted in descending order of `TotalQuantity` (most shipped products first).
+- **Limiting**: The `LIMIT 5` clause restricts the output to the top 5 products.
+
+**4. Monthly Shipping Costs**
+- Objective: Analyze the monthly shipping costs using a common table expression (CTE).
+```sql
+WITH MonthlyCosts AS (
+    SELECT DATE_FORMAT(S.ShipmentDate, '%Y-%m') AS Month, SUM(S.TotalCost) AS MonthlyCost
+    FROM Shipments S
+    GROUP BY Month)
+SELECT Month, MonthlyCost
+FROM MonthlyCosts
+ORDER BY Month;
+```
+- **Common Table Expression (CTE)**: 
+  - `MonthlyCosts` computes the total cost of shipments grouped by month.
+  - `DATE_FORMAT(S.ShipmentDate, '%Y-%m')` extracts the year and month from the shipment date.
+- **Aggregation**: `SUM(S.TotalCost)` calculates the total shipment cost for each month.
+- **Ordering**: Results are sorted chronologically by month.
+
+**5. Supplier Performance**
+- Objective: Rank suppliers by total shipments of their products using a window function.
+```sql
+SELECT S.SupplierID, S.SupplierName, COUNT(DISTINCT SD.ShipmentID) AS TotalShipments,
+    RANK() OVER (ORDER BY COUNT(DISTINCT SD.ShipmentID) DESC) AS SupplierRank
+FROM Suppliers S
+JOIN Products P ON S.SupplierID = P.SupplierID
+JOIN ShipmentDetails SD ON P.ProductID = SD.ProductID
+GROUP BY S.SupplierID, S.SupplierName;
+```
 
