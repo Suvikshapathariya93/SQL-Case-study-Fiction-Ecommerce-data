@@ -4,7 +4,7 @@
 - [Introduction](#introduction)
 - [Problem Statement](#problem-statement)
 - [Database Schema](#database-schema)
-- [Case Study/task Questions and answers](#case-study/task-questions-and-answers)
+- [Case Study: Questions and answers](#case-study-questions-and-answers)
 - [Key Insights](#key-insights)
 
 ## Introduction
@@ -69,9 +69,24 @@ The case study revolves around five key datasets:
 | SupplierName        | VARCHAR       | ID of the associated shipment             |
 | Rating              | INT           | ID of the product shipped                 |
 
-## Case Study/task Questions and answers
+## Case Study: Questions and answers
 
+**1. Total Shipments and Costs by Warehouse**
+- Objective: Calculate the total shipments, weight, and cost managed by each warehouse
+```sql
+SELECT W.WarehouseID, W.WarehouseName, COUNT(S.ShipmentID) AS TotalShipments, SUM(S.TotalWeight) AS TotalWeight, SUM(S.TotalCost) AS TotalCost
+FROM Warehouses W
+LEFT JOIN Shipments S ON W.WarehouseID = S.WarehouseID
+GROUP BY 1,2
+ORDER BY TotalCost DESC;
+```
+- **Tables**: `Warehouses` and `Shipments` are joined using `WarehouseID`.
+- **Aggregation**:
+  - `COUNT(S.ShipmentID)` calculates the total number of shipments for each warehouse.
+  - `SUM(S.TotalWeight)` sums up the total weight of all shipments.
+  - `SUM(S.TotalCost)` calculates the total cost of shipments.
+- **Grouping**: The results are grouped by `WarehouseID` and `WarehouseName`.
+- **Ordering**: The data is sorted in descending order of `TotalCost`.
 
-
-
+**2. **
 
