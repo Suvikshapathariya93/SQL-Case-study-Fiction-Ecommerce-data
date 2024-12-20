@@ -70,8 +70,8 @@ The case study revolves around five key datasets:
 | **Column Name**     | **Data Type** | **Description**                           |
 |---------------------|---------------|-------------------------------------------|
 | SupplierID          | INT           | Unique identifier for each supplier       |
-| SupplierName        | VARCHAR       | ID of the associated shipment             |
-| Rating              | INT           | ID of the product shipped                 |
+| SupplierName        | VARCHAR       | Name of the Suppliers                     |
+| Rating              | INT           | Supplier rating(1 to 5)                   |
 
 ## Case Study: Questions and answers
 
